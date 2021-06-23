@@ -1,0 +1,198 @@
+CREATE TABLE [AlunoXTurma]
+(
+ [ID_Turma]       int NOT NULL ,
+ [Cod_matricula]  int NOT NULL ,
+ [Tipo_atividade] varchar(200) NOT NULL ,
+
+
+ CONSTRAINT [PK_tablexturma] PRIMARY KEY CLUSTERED ([ID_Turma] ASC, [Cod_matricula] ASC, [Tipo_atividade] ASC),
+ CONSTRAINT [FK_131] FOREIGN KEY ([ID_Turma], [Tipo_atividade])  REFERENCES [dbo].[Turma]([ID_Turma], [Tipo_atividade]),
+ CONSTRAINT [FK_134] FOREIGN KEY ([Cod_matricula])  REFERENCES [dbo].[Alunos]([Cod_matricula])
+);
+GO
+
+
+CREATE NONCLUSTERED INDEX [fkIdx_132] ON [AlunoXTurma] 
+ (
+  [ID_Turma] ASC, 
+  [Tipo_atividade] ASC
+ )
+
+GO
+
+CREATE NONCLUSTERED INDEX [fkIdx_135] ON [AlunoXTurma] 
+ (
+  [Cod_matricula] ASC
+ )
+
+GO
+
+CREATE TABLE [Atividade]
+(
+ [Tipo_atividade] varchar(200) NOT NULL ,
+ [data_inicio]    datetime NOT NULL ,
+ [data_final]     datetime NULL ,
+
+
+ CONSTRAINT [PK_atividade] PRIMARY KEY CLUSTERED ([Tipo_atividade] ASC)
+);
+GO
+
+CREATE TABLE [dbo].[Alunos]
+(
+ [Cod_matricula]   int NOT NULL ,
+ [Nome]            varchar(200) NOT NULL ,
+ [Endereço]        varchar(200) NOT NULL ,
+ [Telefone]        int NOT NULL ,
+ [Altura]          int NOT NULL ,
+ [Peso]            int NOT NULL ,
+ [Data_matricula]  datetime NOT NULL ,
+ [Data_nascimento] date NOT NULL ,
+
+
+ CONSTRAINT [PK_alunos] PRIMARY KEY CLUSTERED ([Cod_matricula] ASC)
+);
+GO
+
+CREATE TABLE [dbo].[Chamada]
+(
+ [Cod_matricula]  int NOT NULL ,
+ [ID_Turma]       int NOT NULL ,
+ [Tipo_atividade] varchar(200) NOT NULL ,
+ [presente]       bit NOT NULL ,
+ [data_falta]     datetime NULL ,
+
+
+ CONSTRAINT [PK_ausência] PRIMARY KEY CLUSTERED ([Cod_matricula] ASC, [ID_Turma] ASC, [Tipo_atividade] ASC),
+ CONSTRAINT [FK_83] FOREIGN KEY ([Cod_matricula])  REFERENCES [dbo].[Alunos]([Cod_matricula]),
+ CONSTRAINT [FK_91] FOREIGN KEY ([ID_Turma], [Tipo_atividade])  REFERENCES [dbo].[Turma]([ID_Turma], [Tipo_atividade])
+);
+GO
+
+
+CREATE NONCLUSTERED INDEX [fkIdx_84] ON [dbo].[Chamada] 
+ (
+  [Cod_matricula] ASC
+ )
+
+GO
+
+CREATE NONCLUSTERED INDEX [fkIdx_92] ON [dbo].[Chamada] 
+ (
+  [ID_Turma] ASC, 
+  [Tipo_atividade] ASC
+ )
+
+GO
+
+CREATE TABLE [dbo].[Instrutor]
+(
+ [RG]              int NOT NULL ,
+ [Nome]            varchar(200) NOT NULL ,
+ [Titulacão]       varchar(200) NOT NULL ,
+ [Data_nascimento] date NOT NULL ,
+
+
+ CONSTRAINT [PK_instrutor] PRIMARY KEY CLUSTERED ([RG] ASC)
+);
+GO
+
+CREATE TABLE [dbo].[Numeros_Telefones]
+(
+ [RG]       int NOT NULL ,
+ [Telefone] int NOT NULL ,
+
+
+ CONSTRAINT [PK_telefone] PRIMARY KEY CLUSTERED ([RG] ASC),
+ CONSTRAINT [FK_77] FOREIGN KEY ([RG])  REFERENCES [dbo].[Instrutor]([RG])
+);
+GO
+
+
+CREATE NONCLUSTERED INDEX [fkIdx_78] ON [dbo].[Numeros_Telefones] 
+ (
+  [RG] ASC
+ )
+
+GO
+
+CREATE TABLE [dbo].[Turma]
+(
+ [ID_Turma]       int NOT NULL ,
+ [Tipo_atividade] varchar(200) NOT NULL ,
+ [RG]             int NOT NULL ,
+ [Numero_alunos]  int NOT NULL ,
+ [Horario_aula]   datetime NOT NULL ,
+ [Duração_aula]   int NOT NULL ,
+ [data_inicial]   datetime NOT NULL ,
+ [data_final]     datetime NOT NULL ,
+ [Monitor]        int NOT NULL ,
+
+
+ CONSTRAINT [PK_turma] PRIMARY KEY CLUSTERED ([ID_Turma] ASC, [Tipo_atividade] ASC),
+ CONSTRAINT [FK_150] FOREIGN KEY ([Tipo_atividade])  REFERENCES [Atividade]([Tipo_atividade]),
+ CONSTRAINT [FK_35] FOREIGN KEY ([RG])  REFERENCES [dbo].[Instrutor]([RG]),
+ CONSTRAINT [FK_98] FOREIGN KEY ([Monitor])  REFERENCES [dbo].[Alunos]([Cod_matricula])
+);
+GO
+
+
+CREATE NONCLUSTERED INDEX [fkIdx_151] ON [dbo].[Turma] 
+ (
+  [Tipo_atividade] ASC
+ )
+
+GO
+
+CREATE NONCLUSTERED INDEX [fkIdx_36] ON [dbo].[Turma] 
+ (
+  [RG] ASC
+ )
+
+GO
+
+CREATE NONCLUSTERED INDEX [fkIdx_99] ON [dbo].[Turma] 
+ (
+  [Monitor] ASC
+ )
+
+GO
+
+CREATE TABLE [Estagiario]
+(
+ [ID_Turma]       int NOT NULL ,
+ [Cod_matricula]  int NOT NULL ,
+ [Tipo_atividade] varchar(200) NOT NULL ,
+ [data_inicio]    date NOT NULL ,
+ [data_final]     date NULL ,
+
+
+ CONSTRAINT [PK_estagiario] PRIMARY KEY CLUSTERED ([ID_Turma] ASC, [Cod_matricula] ASC, [Tipo_atividade] ASC),
+ CONSTRAINT [FK_138] FOREIGN KEY ([ID_Turma], [Tipo_atividade])  REFERENCES [dbo].[Turma]([ID_Turma], [Tipo_atividade]),
+ CONSTRAINT [FK_142] FOREIGN KEY ([Cod_matricula])  REFERENCES [dbo].[Alunos]([Cod_matricula]),
+ CONSTRAINT [FK_157] FOREIGN KEY ([Tipo_atividade])  REFERENCES [Atividade]([Tipo_atividade])
+);
+GO
+
+
+CREATE NONCLUSTERED INDEX [fkIdx_139] ON [Estagiario] 
+ (
+  [ID_Turma] ASC, 
+  [Tipo_atividade] ASC
+ )
+
+GO
+
+CREATE NONCLUSTERED INDEX [fkIdx_143] ON [Estagiario] 
+ (
+  [Cod_matricula] ASC
+ )
+
+GO
+
+CREATE NONCLUSTERED INDEX [fkIdx_158] ON [Estagiario] 
+ (
+  [Tipo_atividade] ASC
+ )
+
+GO
